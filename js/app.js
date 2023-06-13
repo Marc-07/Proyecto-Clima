@@ -25,27 +25,45 @@ function buscarClima (e){
         
     }
 
-    function mostrarError(mensaje){
-        const alerta = document.querySelector('.bg-red-200');
+    //Consultar API
+    consultarAPI(ciudad, pais);
+};
 
-        if ( !alerta){
+function mostrarError(mensaje){
+        
+    const alerta = document.querySelector('.bg-red-200');
 
-            // Crear una alerta
-            const alerta = document.createElement('div');
+    if ( !alerta){
 
-            alerta.classList.add('bg-red-200', 'border-red-400', 'text-red-700', 'px-4', 'py-3', 'rounded', 'max-w-md', 'mx-auto', 'mt-6', 'text-center');
+        // Crear una alerta
+        const alerta = document.createElement('div');
 
-            alerta.innerHTML = `
-            <strong class ='font-bold'>Error!</strong>
-            <span class = 'block'>${mensaje}</span>
+        alerta.classList.add('bg-red-200', 'border-red-400', 'text-red-700', 'px-4', 'py-3', 'rounded', 'max-w-md', 'mx-auto', 'mt-6', 'text-center');
+
+        alerta.innerHTML = `
+        <strong class ='font-bold'>Error!</strong>
+        <span class = 'block'>${mensaje}</span>
         `;
 
         container.appendChild(alerta);
 
         setTimeout(() => {
             alerta.remove(mensaje);
-        }, 3000);
-
-        }  
+        }, 3000);   
     }
+};
+
+function consultarAPI(ciudad, pais){
+    const appId = '60fe984ab2f4ba4ff7dbd42f1bfe2693';
+    const url= `https://api.openweathermap.org/data/2.5/weather?q=${ciudad},${pais}&appid=${appId}`;
+
+
+    fetch(url)
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            console.log(datos);
+            if(datos.cod === '404'){
+                mostrarError('Ciudad no encontrada');
+            } 
+        });
 }
