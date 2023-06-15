@@ -62,8 +62,9 @@ function consultarAPI(ciudad, pais){
         .then(respuesta => respuesta.json())
         .then(datos => {
 
+
             limpiarHTML();//Limpiar el HTML previo
-            
+
             if(datos.cod === '404'){
                 mostrarError('Ciudad no encontrada');
                 return;
@@ -75,20 +76,43 @@ function consultarAPI(ciudad, pais){
 
 function mostrarClima(datos){
     
-    const{main: {temp, temp_max, temp_mix}}=datos;
+    const{name, main: {temp, temp_max, temp_min}}=datos;
 
-    const centigrados = Number.parseInt(temp - 273.15);
+    const centigrados = kelvinCentigrados(temp);
+    const max = kelvinCentigrados(temp_max);
+    const min = kelvinCentigrados(temp_min);
+
+    const nombreCiudad = document.createElement('p');
+    nombreCiudad.textContent = `Clima en ${name}`;
+    nombreCiudad.classList.add('font-bold', 'text-2xl');
+
+
     const actual = document.createElement('p');
     actual.innerHTML = `${centigrados} &#8451;`;
     actual.classList.add('font-bold','text-6xl');
 
+    const tempMaxima = document.createElement('p');
+    tempMaxima.innerHTML =`Max: ${max} &#8451;`;
+    tempMaxima.classList.add('text-xl')
+
+    const tempMinima = document.createElement('p');
+    tempMinima.innerHTML =`Min: ${min} &#8451;`;
+    tempMinima.classList.add('text-xl')
+
     const resultadoDiv = document.createElement('div');
     resultadoDiv.classList.add('text-center', 'text-white');
+
+    resultadoDiv.appendChild(nombreCiudad);
     resultadoDiv.appendChild(actual);
+    resultadoDiv.appendChild(tempMaxima);
+    resultadoDiv.appendChild(tempMinima);
+    
 
     resultado.appendChild(resultadoDiv);
 
 }
+
+const  kelvinCentigrados = grados => parseInt(grados - 273.15);
 
 function limpiarHTML(){
     while(resultado.firstChild){
